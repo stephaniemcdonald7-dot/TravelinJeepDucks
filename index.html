@@ -62,25 +62,35 @@
             line-height: 1.5;
         }
 
+        /* Holds buttons side-by-side on desktop, stacked on mobile */
         .cta-container {
             margin: 30px 0;
             text-align: center;
             z-index: 10;
             position: relative;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0 20px;
         }
 
-        /* Large, unmissable button for users scanning on mobile */
-        .btn-log {
+        /* Base button styles */
+        .btn-log, .btn-view {
             display: inline-block;
-            background-color: #ffcc00;
-            color: #121212;
             font-weight: bold;
-            font-size: 1.3rem;
-            padding: 18px 40px;
+            font-size: 1.2rem;
+            padding: 18px 35px;
             border-radius: 50px;
             text-decoration: none;
-            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
             transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        /* Solid Yellow Log Button */
+        .btn-log {
+            background-color: #ffcc00;
+            color: #121212;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
         }
 
         .btn-log:hover {
@@ -88,7 +98,22 @@
             box-shadow: 0 6px 20px rgba(255, 204, 0, 0.5);
         }
 
-        .btn-log:active {
+        /* Dark/Bordered View Submissions Button */
+        .btn-view {
+            background-color: transparent;
+            color: #ffcc00;
+            border: 2px solid #ffcc00;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            background-color: rgba(255, 204, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.2);
+        }
+
+        .btn-log:active, .btn-view:active {
             transform: translateY(1px);
         }
 
@@ -169,6 +194,7 @@
 </head>
 <body>
 
+    <!-- Background Scattered Ducks Pattern -->
     <div class="duck-pattern">
         <img src="Yellow Duck Hat.png" class="duck-item d1" alt="Chibi Duck">
         <img src="Orange Stripe Duck.png" class="duck-item d2" alt="Chibi Duck">
@@ -203,8 +229,12 @@
         <p class="subtitle">You found a duck! This little bird is on an epic cross-country road trip. Check out the map below to see where it's been, and log your location to keep the journey going!</p>
     </header>
 
+    <!-- Updated Button Container with Submission and View Links -->
     <div class="cta-container">
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSf-73IE035uWizBMzmJ5ILhL38AEsig5vWb_olGx43tFLxMyQ/viewform?usp=publish-editor" target="_blank" class="btn-log">📍 I FOUND A DUCK! LOG IT HERE</a>
+        
+        <!-- REPLACE THE HREF BELOW WITH YOUR PUBLISHED GOOGLE SHEET LINK OR GOOGLE FORM SUMMARY RESULTS LINK -->
+        <a href="<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTguW56oTAqyHWEC9lFf0VJCZoohgfZYjvKozoYcWzR6Yj3QrJ_w42MSZofnX-SmdxA9QzOuuysx6bc/pubhtml?gid=756344834&amp;single=true&amp;widget=true&amp;headers=false"></iframe>" target="_blank" class="btn-view">👀 VIEW DUCK SUBMISSIONS</a>
     </div>
 
     <div class="map-container">
