@@ -84,12 +84,15 @@
             border-radius: 50px;
             text-decoration: none;
             transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            box-sizing: border-box;
         }
 
         /* Solid Yellow Log Button */
         .btn-log {
             background-color: #ffcc00;
             color: #121212;
+            border: none;
             box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
         }
 
@@ -104,7 +107,6 @@
             color: #ffcc00;
             border: 2px solid #ffcc00;
             box-shadow: 0 4px 15px rgba(255, 204, 0, 0.1);
-            box-sizing: border-box;
         }
 
         .btn-view:hover {
@@ -174,12 +176,130 @@
         .d13 { top: 65%; right: 4%; transform: rotate(10deg); }
 
         .d14 { bottom: 18%; left: 4%; transform: rotate(15deg); }
-        .d15 { bottom: 8%; left: 16%; transform: rotate(-12deg); }
+        .d15 { bottom: 8%; left: 16%; rotate(-12deg); }
         .d16 { bottom: 22%; left: 25%; transform: rotate(8deg); }
 
         .d17 { bottom: 19%; right: 3%; transform: rotate(-20deg); }
         .d18 { bottom: 7%; right: 14%; transform: rotate(15deg); }
         .d19 { bottom: 25%; right: 22%; transform: rotate(-5deg); }
+
+        /* MODAL POPUP STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .form-card {
+            background-color: #1e1e1e;
+            border: 2px solid #ffcc00;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .form-card {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ffcc00;
+        }
+
+        .form-card h2 {
+            color: #ffcc00;
+            margin-top: 0;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #a0a0a0;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background-color: #121212;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #ffcc00;
+        }
+
+        .submit-btn {
+            background-color: #ffcc00;
+            color: #121212;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 14px;
+            border: none;
+            border-radius: 50px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .submit-btn:hover {
+            background-color: #e6b800;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        #form-status {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
 
         footer {
             margin-top: auto;
@@ -194,7 +314,6 @@
 </head>
 <body>
 
-    <!-- Background Scattered Ducks Pattern -->
     <div class="duck-pattern">
         <img src="Yellow Duck Hat.png" class="duck-item d1" alt="Chibi Duck">
         <img src="Orange Stripe Duck.png" class="duck-item d2" alt="Chibi Duck">
@@ -229,21 +348,120 @@
         <p class="subtitle">You found a duck! This little bird is on an epic cross-country road trip. Check out the map below to see where it's been, and log your location to keep the journey going!</p>
     </header>
 
-    <!-- Updated Button Container with Submission and View Links -->
-<div class="cta-container">
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf-73IE035uWizBMzmJ5ILhL38AEsig5vWb_olGx43tFLxMyQ/viewform?usp=sharing&ouid=115154378959764371085">📍 I FOUND A DUCK! LOG IT HERE</a>
-    
-    <!-- Cleaned up active Google Sheet link below -->
-    <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTguW56oTAqyHWEC9lFf0VJCZoohgfZYjvKozoYcWzR6Yj3QrJ_w42MSZofnX-SmdxA9QzOuuysx6bc/pubhtml?gid=756344834&single=true" target="_blank" class="btn-view">👀 VIEW DUCK SUBMISSIONS</a>
-</div>
+    <div class="cta-container">
+        <button class="btn-log" id="openFormBtn">📍 I FOUND A DUCK! LOG IT HERE</button>
+        <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTguW56oTAqyHWEC9lFf0VJCZoohgfZYjvKozoYcWzR6Yj3QrJ_w42MSZofnX-SmdxA9QzOuuysx6bc/pubhtml?gid=756344834&single=true" target="_blank" class="btn-view">👀 VIEW DUCK SUBMISSIONS</a>
+    </div>
+
     <div class="map-container">
         <iframe src="https://www.google.com/maps/embed?pb="></iframe>
     </div>
     
+    <div class="modal-overlay" id="formModal">
+        <div class="form-card">
+            <button class="close-btn" id="closeFormBtn">×</button>
+            <h2>Log Your Duck</h2>
+            
+            <form id="duckLogForm">
+                <div class="form-group">
+                    <label for="name">Your Name / Jeep Handle</label>
+                    <input type="text" id="name" name="Name" required placeholder="e.g., JeepGirl99">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Where did you find it?</label>
+                    <input type="text" id="location" name="Location" required placeholder="City, State or Landmarks">
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Message / Duck Story</label>
+                    <textarea id="notes" name="Notes" rows="3" placeholder="Where is the duck heading next?"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Log</button>
+                <div id="form-status"></div>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <div>© 2026 Travelin' Jeep Ducks. Duck, Duck, Jeep!</div>
         <a href="mailto:info@travelinjeepduck.com" style="color: #ffcc00; text-decoration: none;">info@travelinjeepduck.com</a>
     </footer>
 
+    <script>
+        // Form structure references your Google Form ID internally for tracking
+        const GOOGLE_FORM_ID = '1FAIpQLSf-73IE035uWizBMzmJ5ILhL38AEsig5vWb_olGx43tFLxMyQ';
+        
+        // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL (ENDING IN /exec) HERE
+        const SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+        const modal = document.getElementById('formModal');
+        const openBtn = document.getElementById('openFormBtn');
+        const closeBtn = document.getElementById('closeFormBtn');
+        const form = document.getElementById('duckLogForm');
+        const statusDiv = document.getElementById('form-status');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Modal Controls
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            statusDiv.textContent = '';
+            form.reset();
+        });
+
+        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) modal.classList.remove('active');
+        });
+
+        // Background Submit Handler
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                statusDiv.style.color = '#ff3333';
+                statusDiv.textContent = 'Setup Error: Please update the SCRIPT_URL placeholder in the script tags!';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging Duck...';
+            statusDiv.style.color = '#ffcc00';
+            statusDiv.textContent = 'Sending details to the pipeline...';
+
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: params,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    statusDiv.style.color = '#33cc33';
+                    statusDiv.textContent = 'Duck logged successfully! 🦆💨';
+                    setTimeout(() => {
+                        modal.classList.remove('active');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Submit Log';
+                    }, 2000);
+                } else {
+                    throw new Error('Pipeline refusal');
+                }
+            })
+            .catch(error => {
+                console.error('Submission error:', error);
+                statusDiv.style.color = '#ff3333';
+                statusDiv.textContent = 'Error logging data. Please check connection and try again.';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Log';
+            });
+        });
+    </script>
 </body>
 </html>
