@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duck Submissions - Travelin' Jeep Ducks</title>
+    <link rel="icon" type="image/svg+xml" href="DuckySVG.svg">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #ffcc00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: inline-block;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .submissions-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Sleek card design matching your dark theme */
+        .duck-card {
+            background-color: #1e1e1e;
+            border-left: 5px solid #ffcc00;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .duck-card h3 {
+            margin: 0 0 10px 0;
+            color: #fff;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .duck-location {
+            font-size: 0.9rem;
+            background-color: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: normal;
+        }
+
+        .duck-story {
+            color: #a0a0a0;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .loading-text {
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 1.2rem;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Recent Duck Sightings</h1>
+    <a href="index.html" class="back-link">← Back to Map</a>
+
+    <div class="submissions-container" id="submissionsList">
+        <div class="loading-text">Tracking down the ducks... 🦆</div>
+    </div>
+
+    <script>
+        // We take your existing published spreadsheet ID
+        const SHEET_ID = '2PACX-1vTguW56oTAqyHWEC9lFf0VJCZoohgfZYjvKozoYcWzR6Yj3QrJ_w42MSZofnX-SmdxA9QzOuuysx6bc';
+        
+        // This targets the specific public tab grid
+        const SCRIPT_URL = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pubhtml?gid=756344834&single=true`;
+
+        async function fetchSubmissions() {
+            try {
+                // Fetch the public HTML page directly from Google
+                const response = await fetch(SCRIPT_URL);
+                const htmlText = await response.text();
+                
+                // Parse the spreadsheet HTML tables natively
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const rows = doc.querySelectorAll('table tbody tr');
+                
+                const container = document.getElementById('submissionsList');
+                container.innerHTML = ''; // Clear loading text
+
+                let entriesFound = false;
+
+                // Loop through rows (skipping the first header row)
+                for (let i = 1; i < rows.length; i++) {
+                    const cells = rows[i].querySelectorAll('td');
+                    
+                    // Grab data based on your columns (Name, Location, Notes)
+                    // Depending on how Google publishes it, Timestamp is usually Column 0, Name is Column 1, etc.
+                    if (cells.length >= 3) {
+                        const name = cells[0].textContent.trim();
+                        const location = cells[1].textContent.trim();
+                        const notes = cells[2].textContent.trim() || "No story left behind, just moving along!";
+
+                        // Skip completely empty rows
+                        if (!name && !location) continue;
+                        entriesFound = true;
+
+                        // Create custom card block
+                        const card = document.createElement('div');
+                        card.className = 'duck-card';
+                        card.innerHTML = `
+                            <h3>${name} <span class="duck-location">📍 ${location}</span></h3>
+                            <p class="duck-story">"${notes}"</p>
+                        `;
+                        // Insert newest at the top
+                        container.insertBefore(card, container.firstChild);
+                    }
+                }
+
+                if (!entriesFound) {
+                    container.innerHTML = '<div class="loading-text">No ducks logged yet. Be the first!</div>';
+                }
+
+            } catch (error) {
+                console.error("Error loading submissions:", error);
+                document.getElementById('submissionsList').innerHTML = 
+                    '<div class="loading-text" style="color: #ff3333;">Failed to load duck log pipeline. Please refresh!</div>';
+            }
+        }
+
+        // Run automatically when page opens
+        fetchSubmissions();
+    </script>
+</body>
+</html>
