@@ -176,7 +176,7 @@
         .d13 { top: 65%; right: 4%; transform: rotate(10deg); }
 
         .d14 { bottom: 18%; left: 4%; transform: rotate(15deg); }
-        .d15 { bottom: 8%; left: 16%; rotate(-12deg); }
+        .d15 { bottom: 8%; left: 16%; transform: rotate(-12deg); }
         .d16 { bottom: 22%; left: 25%; transform: rotate(8deg); }
 
         .d17 { bottom: 19%; right: 3%; transform: rotate(-20deg); }
@@ -348,120 +348,9 @@
         <p class="subtitle">You found a duck! This little bird is on an epic cross-country road trip. Check out the map below to see where it's been, and log your location to keep the journey going!</p>
     </header>
 
-  <div class="cta-container">
-    <button class="btn-log" id="openFormBtn">📍 I FOUND A DUCK! LOG IT HERE</button>
-    <a href="submissions.html" class="btn-view">👀 VIEW DUCK SUBMISSIONS</a>
-</div>
+    <div class="cta-container">
+        <button class="btn-log" id="openFormBtn">📍 I FOUND A DUCK! LOG IT HERE</button>
+        <a href="submissions.html" class="btn-view">👀 VIEW DUCK SUBMISSIONS</a>
+    </div>
     
     <div class="map-container">
-        <iframe src="https://www.google.com/maps/embed?pb="></iframe>
-    </div>
-    
-    <div class="modal-overlay" id="formModal">
-        <div class="form-card">
-            <button class="close-btn" id="closeFormBtn">×</button>
-            <h2>Log Your Duck</h2>
-            
-            <form id="duckLogForm">
-                <div class="form-group">
-                    <label for="name">Your Name / Jeep Handle</label>
-                    <input type="text" id="name" name="Name" required placeholder="e.g., JeepGirl99">
-                </div>
-
-                <div class="form-group">
-                    <label for="location">Where did you find it?</label>
-                    <input type="text" id="location" name="Location" required placeholder="City, State or Landmarks">
-                </div>
-
-                <div class="form-group">
-                    <label for="notes">Message / Duck Story</label>
-                    <textarea id="notes" name="Notes" rows="3" placeholder="Where is the duck heading next?"></textarea>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">Submit Log</button>
-                <div id="form-status"></div>
-            </form>
-        </div>
-    </div>
-
-    <footer>
-        <div>© 2026 Travelin' Jeep Ducks. Duck, Duck, Jeep!</div>
-        <a href="mailto:info@travelinjeepduck.com" style="color: #ffcc00; text-decoration: none;">info@travelinjeepduck.com</a>
-    </footer>
-
-    <script>
-        // Form structure references your Google Form ID internally for tracking
-        const GOOGLE_FORM_ID = '1FAIpQLSf-73IE035uWizBMzmJ5ILhL38AEsig5vWb_olGx43tFLxMyQ';
-        
-        // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL (ENDING IN /exec) HERE
-        const SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
-
-        const modal = document.getElementById('formModal');
-        const openBtn = document.getElementById('openFormBtn');
-        const closeBtn = document.getElementById('closeFormBtn');
-        const form = document.getElementById('duckLogForm');
-        const statusDiv = document.getElementById('form-status');
-        const submitBtn = document.getElementById('submitBtn');
-
-        // Modal Controls
-        openBtn.addEventListener('click', () => {
-            modal.classList.add('active');
-            statusDiv.textContent = '';
-            form.reset();
-        });
-
-        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => {
-            if(e.target === modal) modal.classList.remove('active');
-        });
-
-        // Background Submit Handler
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-                statusDiv.style.color = '#ff3333';
-                statusDiv.textContent = 'Setup Error: Please update the SCRIPT_URL placeholder in the script tags!';
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Logging Duck...';
-            statusDiv.style.color = '#ffcc00';
-            statusDiv.textContent = 'Sending details to the pipeline...';
-
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: params,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.result === 'success') {
-                    statusDiv.style.color = '#33cc33';
-                    statusDiv.textContent = 'Duck logged successfully! 🦆💨';
-                    setTimeout(() => {
-                        modal.classList.remove('active');
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = 'Submit Log';
-                    }, 2000);
-                } else {
-                    throw new Error('Pipeline refusal');
-                }
-            })
-            .catch(error => {
-                console.error('Submission error:', error);
-                statusDiv.style.color = '#ff3333';
-                statusDiv.textContent = 'Error logging data. Please check connection and try again.';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Log';
-            });
-        });
-    </script>
-</body>
-</html>
