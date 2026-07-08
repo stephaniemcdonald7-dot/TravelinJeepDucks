@@ -4,38 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travelin' Jeep Ducks</title>
-    <link rel="icon" type="image/svg+xml" href="DuckySVG.svg">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        /* Modern, clean dark theme */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        header { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, #1f1f1f 0%, #121212 100%); width: 100%; box-sizing: border-box; z-index: 10; }
-        .title-container { display: flex; align-items: center; justify-content: center; gap: 15px; max-width: 900px; margin: 0 auto 10px auto; }
+        
+        /* Chibi Scattering */
+        .duck-scatter { position: fixed; width: 80px; z-index: 1; pointer-events: none; opacity: 0.8; }
+        #duck-1 { top: 20px; left: 20px; transform: rotate(-15deg); }
+        #duck-2 { bottom: 20px; right: 20px; transform: rotate(15deg); }
+        #duck-3 { top: 150px; right: 40px; }
+        #duck-4 { bottom: 100px; left: 40px; }
+
+        header { text-align: center; padding: 40px 20px; width: 100%; z-index: 2; }
+        .title-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
         .title-duck { width: 50px; height: auto; }
-        h1 { color: #ffcc00; margin: 0; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
-        p.subtitle { color: #a0a0a0; font-size: 1.1rem; max-width: 600px; margin: 15px auto 0 auto; line-height: 1.5; }
-        .cta-container { margin: 30px 0; text-align: center; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; padding: 0 20px; z-index: 10; }
-        .btn-log, .btn-view { display: inline-block; font-weight: bold; font-size: 1.2rem; padding: 18px 35px; border-radius: 50px; text-decoration: none; cursor: pointer; transition: transform 0.2s; }
-        .btn-log { background-color: #ffcc00; color: #121212; border: none; }
+        h1 { color: #ffcc00; text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+        
+        .cta-container { margin: 20px 0; display: flex; gap: 20px; z-index: 2; }
+        .btn-log, .btn-view { padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .btn-log { background-color: #ffcc00; color: #000; border: none; }
         .btn-view { background-color: transparent; color: #ffcc00; border: 2px solid #ffcc00; }
         
-        /* Map Styles */
-        .map-container { width: 90%; max-width: 900px; height: 500px; margin-bottom: 50px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #2c2c2c; z-index: 10; }
+        .map-container { width: 90%; max-width: 900px; height: 500px; border-radius: 12px; overflow: hidden; border: 2px solid #2c2c2c; z-index: 2; }
         #map { width: 100%; height: 100%; }
 
         /* Modal Styles */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .form-card { background-color: #1e1e1e; border: 2px solid #ffcc00; border-radius: 15px; padding: 30px; width: 90%; max-width: 450px; }
-        .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 8px; color: #a0a0a0; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; box-sizing: border-box; background-color: #121212; border: 1px solid #444; border-radius: 8px; color: #fff; }
-        .submit-btn { background-color: #ffcc00; color: #121212; font-weight: bold; padding: 14px; border: none; border-radius: 50px; width: 100%; cursor: pointer; }
-        #form-status { margin-top: 15px; text-align: center; font-weight: bold; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .form-card { background-color: #1e1e1e; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; }
     </style>
 </head>
 <body>
+
+    <img src="Purple Goggles Duck.png" class="duck-scatter" id="duck-1" alt="Duck">
+    <img src="Orange Duck.png" class="duck-scatter" id="duck-2" alt="Duck">
+    <img src="Purple Goggles Duck.png" class="duck-scatter" id="duck-3" alt="Duck">
+    <img src="Orange Duck.png" class="duck-scatter" id="duck-4" alt="Duck">
 
     <header>
         <div class="title-container">
@@ -43,97 +47,66 @@
             <h1>Travelin' Jeep Ducks</h1>
             <img src="Orange Duck.png" class="title-duck" alt="Duck">
         </div>
-        <p class="subtitle">Log your duck sightings to map the journey!</p>
     </header>
 
     <div class="cta-container">
-        <button class="btn-log" id="openFormBtn">📍 I FOUND A DUCK! LOG IT HERE</button>
-        <a href="submissions.html" class="btn-view">👀 VIEW DUCK SUBMISSIONS</a>
+        <button class="btn-log" id="openFormBtn">📍 LOG A DUCK</button>
+        <a href="submissions.html" class="btn-view">👀 VIEW SUBMISSIONS</a>
     </div>
 
-    <div class="map-container"> 
-        <div id="map"></div>
-    </div>
+    <div class="map-container"> <div id="map"></div> </div>
 
     <div class="modal-overlay" id="formModal">
         <div class="form-card">
-            <button class="close-btn" id="closeFormBtn">×</button>
-            <h2>Log Your Duck!</h2>
             <form id="duckForm">
-                <div class="form-group">
-                    <label for="finderName">Your Name / Handle</label>
-                    <input type="text" id="finderName" required>
-                </div>
-                <div class="form-group">
-                    <label for="duckLocation">Where did you find it?</label>
-                    <input type="text" id="duckLocation" required>
-                </div>
-                <div class="form-group">
-                    <label for="duckNotes">Adventures / Message</label>
-                    <textarea id="duckNotes" rows="3"></textarea>
-                </div>
-                <button type="submit" class="submit-btn">Submit Log Entry</button>
-                <div id="form-status"></div>
+                <input type="text" name="Name" placeholder="Your Name" required style="width:100%; margin-bottom:10px; padding: 10px;">
+                <input type="text" name="Location" placeholder="Location" required style="width:100%; margin-bottom:10px; padding: 10px;">
+                <textarea name="Notes" placeholder="Message" style="width:100%; margin-bottom:10px; padding: 10px;"></textarea>
+                <button type="submit" class="btn-log" style="width:100%">Submit</button>
             </form>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // 1. Initialize Map
         const map = L.map('map').setView([39.8283, -98.5795], 4);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
 
-        const duckIcon = L.icon({
-            iconUrl: 'Yellow Duck.png',
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-            popupAnchor: [0, -32]
-        });
+        // Ensure this is your /exec URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5dtjDjpVNJxgSMFoJMvqxKuX1eMtMZuc2HiTcr5yRR50IRRwcERnvnKlXBDxwsTUY/exec';
 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4zCNXoLEaws_WXEgIvlIxyGBei18vC-eD14hv9ZmQUC1oka7dXY3mgLq4ZFlLYgXT/exec';
-
-        // 2. Load and Plot
         function loadDucks() {
             fetch(SCRIPT_URL)
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(duck => {
-                        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(duck.Location)}`)
-                            .then(res => res.json())
-                            .then(geo => {
-                                if (geo.length > 0) {
-                                    L.marker([geo[0].lat, geo[0].lon], { icon: duckIcon }).addTo(map)
-                                     .bindPopup(`<b>${duck.Name}</b><br>${duck.Notes}`);
-                                }
-                            });
+                        if(duck.Location) {
+                            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(duck.Location)}`)
+                                .then(res => res.json())
+                                .then(geo => {
+                                    if (geo.length > 0) {
+                                        L.marker([geo[0].lat, geo[0].lon]).addTo(map).bindPopup(`<b>${duck.Name}</b><br>${duck.Notes}`);
+                                    }
+                                });
+                        }
                     });
                 });
         }
         loadDucks();
 
-        // 3. Modal Logic
-        const modal = document.getElementById('formModal');
-        document.getElementById('openFormBtn').addEventListener('click', () => modal.classList.add('active'));
-        document.getElementById('closeFormBtn').addEventListener('click', () => modal.classList.remove('active'));
-
-        // Form Submit
-        document.getElementById('duckForm').addEventListener('submit', function(e) {
+        // Modal triggers
+        document.getElementById('openFormBtn').onclick = () => document.getElementById('formModal').classList.add('active');
+        
+        // Form Submission
+        document.getElementById('duckForm').onsubmit = function(e) {
             e.preventDefault();
-            const submitBtn = this.querySelector('.submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Logging...';
-            
-            const params = new URLSearchParams(new FormData(this));
-            fetch(SCRIPT_URL, { method: 'POST', body: params })
-            .then(res => res.json())
+            fetch(SCRIPT_URL, { method: 'POST', body: new FormData(this) })
             .then(() => {
-                document.getElementById('form-status').textContent = 'Duck logged! 🦆';
+                alert('Duck logged!');
+                document.getElementById('formModal').classList.remove('active');
                 loadDucks();
-                setTimeout(() => modal.classList.remove('active'), 1500);
-            })
-            .finally(() => { submitBtn.disabled = false; submitBtn.textContent = 'Submit'; });
-        });
+            });
+        };
     </script>
 </body>
 </html>
