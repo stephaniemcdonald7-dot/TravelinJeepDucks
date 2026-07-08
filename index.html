@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelin' Jeep Ducks</title>
+    <style>
+        /* Modern, clean dark theme with a vibrant accent color */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, #1f1f1f 0%, #121212 100%);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #ffcc00; /* Classic duck yellow */
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p.subtitle {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .cta-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        /* Large, unmissable button for users scanning on mobile */
+        .btn-log {
+            display: inline-block;
+            background-color: #ffcc00;
+            color: #121212;
+            font-weight: bold;
+            font-size: 1.3rem;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-log:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.5);
+        }
+
+        .btn-log:active {
+            transform: translateY(1px);
+        }
+
+        .map-container {
+            width: 90%;
+            max-width: 900px;
+            height: 500px;
+            margin-bottom: 50px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid #2c2c2c;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🦆 Travelin' Jeep Ducks 🦆</h1>
+        <p class="subtitle">You found a duck! This little bird is on an epic cross-country road trip. Check out the map below to see where it's been, and log your location to keep the journey going!</p>
+    </header>
+
+    <div class="cta-container">
+        <!-- PASTE YOUR GOOGLE FORM LINK BELOW BETWEEN THE QUOTES -->
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf-73IE035uWizBMzmJ5ILhL38AEsig5vWb_olGx43tFLxMyQ/viewform?usp=publish-editor" target="_blank" class="btn-log">📍 I FOUND A DUCK! LOG IT HERE</a>
+    </div>
+
+    <div class="map-container">
+        <!-- PASTE YOUR GOOGLE MAP EMBED CODE BELOW, REPLACE THE PLACEHOLDER IFRAME -->
+        <iframe src="<iframe src="https://www.google.com/maps/d/embed?mid=1CKMI4vBF9BzP09ifWqQ9XzQEPqMDfCU&ehbc=2E312F" width="640" height="480"></iframe>"></iframe>
+    </div>
+
+    <footer>
+        &copy; 2026 Travelin' Jeep Ducks. Duck, Duck, Jeep!
+    </footer>
+
+</body>
+</html>
