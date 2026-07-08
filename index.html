@@ -353,4 +353,84 @@
         <a href="submissions.html" class="btn-view">👀 VIEW DUCK SUBMISSIONS</a>
     </div>
     
-    <div class="map-container">
+    <!-- MAP WORKSPACE -->
+    <div class="map-container"> 
+        <!-- Replace the link below with your actual custom Google My Maps embed link -->
+        <iframe src="https://www.google.com/maps/d/embed?mid=YOUR_ACTUAL_MAP_ID_HERE"></iframe>
+    </div>
+
+    <!-- POPUP FORM MODAL -->
+    <div class="modal-overlay" id="formModal">
+        <div class="form-card">
+            <button class="close-btn" id="closeFormBtn">&times;</button>
+            <h2>Log Your Duck!</h2>
+            <form id="duckForm">
+                <div class="form-group">
+                    <label for="finderName">Your Name / Jeep Handle</label>
+                    <input type="text" id="finderName" placeholder="e.g., WranglerRob" required>
+                </div>
+                <div class="form-group">
+                    <label for="duckLocation">Where did you find it?</label>
+                    <input type="text" id="duckLocation" placeholder="City, State or Coordinates" required>
+                </div>
+                <div class="form-group">
+                    <label for="duckNotes">Duck Adventures / Message</label>
+                    <textarea id="duckNotes" rows="3" placeholder="Where is it heading next?"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Log Entry</button>
+                <div id="form-status"></div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Travelin' Jeep Ducks. All rights reserved.
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT -->
+    <script>
+        const modal = document.getElementById('formModal');
+        const openBtn = document.getElementById('openFormBtn');
+        const closeBtn = document.getElementById('closeFormBtn');
+        const form = document.getElementById('duckForm');
+        const status = document.getElementById('form-status');
+
+        // Open Modal
+        openBtn.addEventListener('click', () => {
+            modal.classList.add('active');
+            status.textContent = ''; // Clear out old messages
+        });
+
+        // Close Modal via 'X' button
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Close Modal by clicking the dark background
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Basic form submit visual feedback handler
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            status.style.color = '#ffcc00';
+            status.textContent = 'Saving your entry... 🦆';
+            
+            // Simulating a minor network save timeout
+            setTimeout(() => {
+                status.style.color = '#00ff88';
+                status.textContent = 'Duck successfully logged!';
+                form.reset();
+                
+                // Close the modal cleanly after submission success
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                }, 1200);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
