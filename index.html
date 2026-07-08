@@ -27,11 +27,27 @@
             width: 100%;
             box-sizing: border-box;
             z-index: 10;
+            position: relative;
+        }
+
+        /* Title frame setup to hold images next to text */
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto 10px auto;
+        }
+
+        .title-duck {
+            width: 50px; /* Size of ducks framing title */
+            height: auto;
         }
 
         h1 {
             color: #ffcc00; /* Classic duck yellow */
-            margin: 0 0 10px 0;
+            margin: 0;
             font-size: 2.5rem;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -41,7 +57,7 @@
             color: #a0a0a0;
             font-size: 1.1rem;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 15px auto 0 auto;
             line-height: 1.5;
         }
 
@@ -49,6 +65,7 @@
             margin: 30px 0;
             text-align: center;
             z-index: 10;
+            position: relative;
         }
 
         /* Large, unmissable button for users scanning on mobile */
@@ -78,12 +95,13 @@
             width: 90%;
             max-width: 900px;
             height: 500px;
-            margin-bottom: 30px;
+            margin-bottom: 50px;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 2px solid #2c2c2c;
             z-index: 10;
+            position: relative;
         }
 
         iframe {
@@ -92,51 +110,50 @@
             border: none;
         }
 
-        /* Floating Transparent Chibi Duck Layout Styles */
+        /* Dense Scattered Background Chibi Duck Layout Styles */
         .duck-pattern {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 1;
+            min-height: 100vh;
+            pointer-events: none; /* Let users click straight through to map/buttons */
+            z-index: 1; /* Places images safely behind main text structures */
         }
 
         .duck-item {
             position: absolute;
-            width: 90px; /* Size of floating chibi background ducks */
+            width: 85px; /* Standard layout size */
             height: auto;
-            opacity: 0.25; /* Subtle transparency so background is non-distracting */
+            opacity: 0.9; /* Keeps them bright and colored as requested */
         }
 
-        /* Positions and rotations for unique look layout */
-        .duck-1 { top: 12%; left: 4%; transform: rotate(-15deg); }
-        .duck-2 { top: 25%; left: 86%; transform: rotate(15deg); }
-        .duck-3 { top: 55%; left: 5%; transform: rotate(20deg); }
-        .duck-4 { top: 68%; left: 84%; transform: rotate(-10deg); }
+        /* Grid placement coordinates surrounding center content */
+        .d1 { top: 12%; left: 3%; transform: rotate(-15deg); }
+        .d2 { top: 8%; left: 22%; transform: rotate(25deg); width: 110px; }
+        .d3 { top: 18%; left: 14%; transform: rotate(-10deg); }
+        .d4 { top: 28%; left: 5%; transform: rotate(15deg); }
+        
+        .d5 { top: 5%; right: 4%; transform: rotate(10deg); }
+        .d6 { top: 15%; right: 18%; transform: rotate(-20deg); }
+        .d7 { top: 24%; right: 8%; transform: rotate(12deg); width: 100px; }
+        
+        .d8 { top: 40%; left: 2%; transform: rotate(-5deg); }
+        .d9 { top: 48%; left: 15%; transform: rotate(18deg); }
+        .d10 { top: 62%; left: 6%; transform: rotate(-25deg); }
+        
+        .d11 { top: 38%; right: 1%; transform: rotate(20deg); }
+        .d12 { top: 52%; right: 12%; transform: rotate(-15deg); }
+        .d13 { top: 65%; right: 4%; transform: rotate(10deg); }
 
-        /* Showcase gallery layout row underneath the map */
-        .duck-row {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            width: 90%;
-            max-width: 900px;
-            margin-bottom: 50px;
-            z-index: 10;
-        }
+        .d14 { bottom: 18%; left: 4%; transform: rotate(15deg); }
+        .d15 { bottom: 8%; left: 16%; transform: rotate(-12deg); }
+        .d16 { bottom: 22%; left: 25%; transform: rotate(8deg); }
 
-        .duck-row img {
-            width: 85px; /* Size of clear ducks in lower gallery */
-            height: auto;
-            transition: transform 0.3s;
-        }
-
-        .duck-row img:hover {
-            transform: scale(1.15) rotate(5deg);
-        }
+        .d17 { bottom: 19%; right: 3%; transform: rotate(-20deg); }
+        .d18 { bottom: 7%; right: 14%; transform: rotate(15deg); }
+        .d19 { bottom: 25%; right: 22%; transform: rotate(-5deg); }
 
         footer {
             margin-top: auto;
@@ -144,20 +161,47 @@
             color: #666;
             font-size: 0.9rem;
             z-index: 10;
+            position: relative;
         }
     </style>
 </head>
 <body>
 
     <div class="duck-pattern">
-        <img src="Yellow Duck Hat.png" class="duck-item duck-1" alt="Yellow Duck with Hat">
-        <img src="Blue Star Duck.png" class="duck-item duck-2" alt="Blue Star Duck">
-        <img src="Pink Dot Duck.png" class="duck-item duck-3" alt="Pink Dot Duck">
-        <img src="Purple Googles Duck.png" class="duck-item duck-4" alt="Purple Goggles Duck">
+        <img src="Yellow Duck Hat.png" class="duck-item d1" alt="Chibi Duck">
+        <img src="Orange Stripe Duck.png" class="duck-item d2" alt="Chibi Duck">
+        <img src="Teal Duck with Leaf.png" class="duck-item d3" alt="Chibi Duck">
+        <img src="Blue Star Duck.png" class="duck-item d4" alt="Chibi Duck">
+        
+        <img src="Blue Star Duck.png" class="duck-item d5" alt="Chibi Duck">
+        <img src="Yellow Duck.png" class="duck-item d6" alt="Chibi Duck">
+        <img src="Rainbow Duck.png" class="duck-item d7" alt="Chibi Duck">
+        
+        <img src="Orange Duck.png" class="duck-item d8" alt="Chibi Duck">
+        <img src="Pink Dot Duck.png" class="duck-item d9" alt="Chibi Duck">
+        <img src="Purple Googles Duck.png" class="duck-item d10" alt="Chibi Duck">
+        
+        <img src="Teal Duck.png" class="duck-item d11" alt="Chibi Duck">
+        <img src="Orange Duck.png" class="duck-item d12" alt="Chibi Duck">
+        <img src="Yellow Duck Hat.png" class="duck-item d13" alt="Chibi Duck">
+        
+        <img src="Orange Stripe Duck.png" class="duck-item d14" alt="Chibi Duck">
+        <img src="Rainbow Duck.png" class="duck-item d15" alt="Chibi Duck">
+        <img src="Teal Duck with Leaf.png" class="duck-item d16" alt="Chibi Duck">
+        
+        <img src="Purple Googles Duck.png" class="duck-item d17" alt="Chibi Duck">
+        <img src="Orange Duck.png" class="duck-item d18" alt="Chibi Duck">
+        <img src="Pink Dot Duck.png" class="duck-item d19" alt="Chibi Duck">
     </div>
 
     <header>
-        <h1>🦆 Travelin' Jeep Ducks 🦆</h1>
+        <div class="title-container">
+            <img src="Teal Duck with Leaf.png" class="title-duck" alt="Chibi Duck">
+            
+            <h1>Travelin' Jeep Ducks</h1>
+            
+            <img src="Purple Googles Duck.png" class="title-duck" alt="Chibi Duck">
+        </div>
         <p class="subtitle">You found a duck! This little bird is on an epic cross-country road trip. Check out the map below to see where it's been, and log your location to keep the journey going!</p>
     </header>
 
@@ -167,19 +211,6 @@
 
     <div class="map-container">
         <iframe src="https://www.google.com/maps/d/embed?mid=1CKMI4vBF9BzP09ifWqQ9XzQEPqMDfCU&ehbc=2E312F"></iframe>
-    </div>
-
-    <div class="duck-row">
-        <img src="Yellow Duck Hat.png" alt="Yellow Duck Hat">
-        <img src="Orange Duck.png" alt="Orange Duck">
-        <img src="Orange Stripe Duck.png" alt="Orange Stripe Duck">
-        <img src="Pink Dot Duck.png" alt="Pink Dot Duck">
-        <img src="Purple Googles Duck.png" alt="Purple Goggles Duck">
-        <img src="Rainbow Duck.png" alt="Rainbow Duck">
-        <img src="Teal Duck with Leaf.png" alt="Teal Duck with Leaf">
-        <img src="Teal Duck.png" alt="Teal Duck">
-        <img src="Yellow Duck.png" alt="Yellow Duck">
-        <img src="Blue Star Duck.png" alt="Blue Star Duck">
     </div>
 
     <footer>
