@@ -8,18 +8,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { font-family: sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        
-        /* Background Layer - pointer-events: none is critical */
         .duck-flock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .duck-item { position: absolute; width: 80px; opacity: 0.7; }
-
-        /* Interactive Layer */
         header, .btn-container, .map-container, .modal-overlay { position: relative; z-index: 100; }
         .btn-container { display: flex; gap: 15px; margin: 20px 0; pointer-events: auto; }
-
         .map-container { width: 90%; max-width: 900px; height: 500px; margin: 20px 0; border-radius: 12px; overflow: hidden; border: 2px solid #ffcc00; pointer-events: auto; }
         #map { width: 100%; height: 100%; z-index: 10; }
-        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.active { display: flex; }
         .form-card { background-color: #1e1e1e; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; border: 2px solid #ffcc00; }
@@ -49,63 +43,44 @@
         <div class="form-card">
             <form id="duckForm">
                 <input type="text" name="Name" placeholder="Your Name/Jeep Name" required style="width:100%; margin-bottom:10px; padding:10px;">
-                <input type="text" name="Name" placeholder="Location (City, State)" required style="width:100%; margin-bottom:10px; padding:10px;">
+                <input type="text" name="Location" placeholder="Location (City, State)" required style="width:100%; margin-bottom:10px; padding:10px;">
                 <input type="file" name="file" accept="image/*" required style="width:100%; margin-bottom:10px;">
+                <input type="hidden" name="lat" id="lat">
+                <input type="hidden" name="lng" id="lng">
                 <button type="submit" class="btn-log" style="width:100%">Submit</button>
             </form>
         </div>
     </div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // 1. YOUR DEPLOYMENT URL
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5dtjDjpVNJxgSMFoJMvqxKuX1eMtMZuc2HiTcr5yRR50IRRwcERnvnKlXBDxwsTUY/exec';
-
     let map, marker;
 
     window.onload = function() {
         map = L.map('map').setView([39.8283, -98.5795], 4);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
 
-        // Capture location when user clicks map
         map.on('click', function(e) {
             if (marker) map.removeLayer(marker);
             marker = L.marker(e.latlng).addTo(map);
             document.getElementById('lat').value = e.latlng.lat;
             document.getElementById('lng').value = e.latlng.lng;
-            alert("Location set: " + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4));
+            alert("Location set!");
         });
     };
 
-    // Button Logic
     const modal = document.getElementById('formModal');
-    document.getElementById('openFormBtn').addEventListener('click', () => {
-        modal.classList.add('active');
-    });
+    document.getElementById('openFormBtn').addEventListener('click', () => modal.classList.add('active'));
 
-    // Form Submission Logic
     document.getElementById('duckForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        // Check if location was set
-        if(!document.getElementById('lat').value) {
-            alert("Please click on the map to set your location first!");
-            return;
-        }
+        if(!document.getElementById('lat').value) { alert("Please click the map to set location!"); return; }
 
         const formData = new FormData(document.getElementById('duckForm'));
-        
         fetch(SCRIPT_URL, { method: 'POST', body: formData })
-        .then(response => {
-            alert('Duck logged successfully!');
-            modal.classList.remove('active');
-            document.getElementById('duckForm').reset();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to log duck. Check console for details.');
-        });
+        .then(() => { alert('Duck logged!'); modal.classList.remove('active'); document.getElementById('duckForm').reset(); })
+        .catch(error => { console.error(error); alert('Error logging duck.'); });
     });
 </script>
 </body>
