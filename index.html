@@ -10,7 +10,71 @@
         body { font-family: sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
         .duck-flock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .duck-item { position: absolute; width: 80px; opacity: 0.7; }
-        header, .btn-container, .map-container, .modal-overlay { position: relative; z-index: 100; }
+        header, .qr-instructions, .btn-container, .map-container, .modal-overlay { position: relative; z-index: 100; }
+        
+        /* QR Instructions Dark Theme Styling */
+        .qr-instructions {
+            text-align: center;
+            max-width: 900px;
+            width: 90%;
+            margin: 10px auto 20px auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+        }
+        .qr-instructions h3 {
+            color: #ffcc00;
+            font-size: 1.8rem;
+            margin: 0 0 5px 0;
+        }
+        .qr-instructions .subtitle {
+            color: #b0b0b0;
+            font-size: 1rem;
+            margin: 0 0 20px 0;
+        }
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .step-card {
+            flex: 1;
+            min-width: 220px;
+            background: #252525;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .step-number {
+            background-color: #ffcc00;
+            color: #000;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 10px auto;
+        }
+        .step-card h4 {
+            margin: 5px 0;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        .step-card p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
         .btn-container { display: flex; gap: 15px; margin: 20px 0; pointer-events: auto; }
         .map-container { width: 90%; max-width: 900px; height: 500px; margin: 20px 0; border-radius: 12px; overflow: hidden; border: 2px solid #ffcc00; pointer-events: auto; }
         #map { width: 100%; height: 100%; z-index: 10; }
@@ -26,6 +90,12 @@
         .form-card input[type="text"] { padding: 10px; border-radius: 5px; border: none; background: #fff; color: #000; }
         .form-card input[type="file"] { color: #fff; margin-top: 5px; font-size: 0.9em; }
         #gps-status { display: block; text-align: center; font-size: 0.85em; margin-bottom: 10px; color: #ffcc00; }
+
+        @media (max-width: 768px) {
+            .steps-container {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -35,116 +105,38 @@
         <img src="Orange Duck.png" class="duck-item" style="top:15%; right:5%;">
         <img src="Pink Dot Duck.png" class="duck-item" style="top:60%; left:5%;">
         <img src="Teal Duck.png" class="duck-item" style="top:10%; left:35%;">
-		<img src="Blue Star Duck.png" class="duck-item" style="top:5%; left:2%;">
+        <img src="Blue Star Duck.png" class="duck-item" style="top:5%; left:2%;">
         <img src="Orange Duck.png" class="duck-item" style="top:15%; right:5%;">
         <img src="Pink Dot Duck.png" class="duck-item" style="top:60%; left:5%;">
         <img src="Teal Duck.png" class="duck-item" style="top:10%; left:35%;">
     </div>
 
     <header><h1>Travelin' Jeep Ducks</h1></header>
-	<!-- QR Code Instructions Section -->
-<section class="qr-instructions">
-    <h3>You've Been Ducked! 🦆</h3>
-    <p class="subtitle">You just scanned the QR code on a traveling Jeep duck. Here is what to do next:</p>
-    
-    <div class="steps-container">
-        <div class="step-card">
-            <div class="step-number">1</div>
-            <h4>Log the Find</h4>
-            <p>Type in the duck's unique ID (if it has one) and share where you found it!</p>
-        </div>
+
+    <section class="qr-instructions">
+        <h3>You've Been Ducked! 🦆</h3>
+        <p class="subtitle">You just scanned the QR code on a traveling Jeep duck. Here is what to do next:</p>
         
-        <div class="step-card">
-            <div class="step-number">2</div>
-            <h4>Snap a Pic</h4>
-            <p>Take a photo of the duck on your Jeep or at its current location and upload it to its gallery.</p>
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Log the Find</h4>
+                <p>Click the button below to type your name, notes, and drop a location pin on our tracking map!</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Snap a Pic</h4>
+                <p>Take a photo of the duck sitting on your dashboard or on your Jeep and upload it with your log.</p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Keep it Moving</h4>
+                <p>Pass the duck along! Place it on a brand new Jeep to keep its cross-country adventure alive.</p>
+            </div>
         </div>
-        
-        <div class="step-card">
-            <div class="step-number">3</div>
-            <h4>Keep it Moving</h4>
-            <p>Pass the duck along! Place it on another Jeep to keep its adventure alive across the map.</p>
-        </div>
-    </div>
-</section>
-
-<!-- Simple CSS Styling (Paste this in your <style> tag or CSS file) -->
-<style>
-    .qr-instructions {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        text-align: center;
-        max-width: 900px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-
-    .qr-instructions h3 {
-        color: #ffc107; /* Classic Jeep Duck Yellow */
-        font-size: 2rem;
-        margin-bottom: 5px;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    }
-
-    .qr-instructions .subtitle {
-        color: #555;
-        font-size: 1.1rem;
-        margin-bottom: 25px;
-    }
-
-    .steps-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .step-card {
-        flex: 1;
-        min-width: 250px;
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        position: relative;
-    }
-
-    .step-number {
-        background-color: #343a40; /* Dark Jeep grill color */
-        color: #fff;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        margin: 0 auto 10px auto;
-    }
-
-    .step-card h4 {
-        margin: 10px 0;
-        color: #212529;
-        font-size: 1.2rem;
-    }
-
-    .step-card p {
-        color: #6c757d;
-        font-size: 0.95rem;
-        line-height: 1.4;
-    }
-
-    /* Responsive design for mobile screens */
-    @media (max-width: 768px) {
-        .steps-container {
-            flex-direction: column;
-        }
-    }
-</style>
-
+    </section>
     
     <div class="btn-container">
         <button class="btn-log" style="width: auto;" id="openFormBtn">📍 LOG A DUCK</button>
@@ -179,11 +171,9 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script type="module">
-  // 1. Import the proper web versions of Firebase directly via CDN modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // 2. Updated to your exact verified configuration from your console screenshot
   const firebaseConfig = {
     apiKey: "AIzaSyD-hoTeWLJRsnheCZvEWFGwdxlfvL0Q6Uk",
     authDomain: "travelinjeepducks.firebaseapp.com",
@@ -194,19 +184,16 @@
     measurementId: "G-79Z5FD1MF3"
   };
 
-  // 3. Initialize services
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   let map, userMarker;
 
-  // Initialize your Leaflet map wrapper
   map = L.map('map').setView([39.8283, -98.5795], 4);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
       attribution: '&copy; OpenStreetMap' 
   }).addTo(map);
 
-  // Allow fallback click pinpointing directly on the map surface
   map.on('click', function(e) {
       if (userMarker) map.removeLayer(userMarker);
       userMarker = L.marker(e.latlng).addTo(map);
@@ -224,7 +211,6 @@
   const lngInput = document.getElementById('lng-input');
   const duckForm = document.getElementById('duckForm');
 
-  // Convert files cleanly to text strings for instant database storage 
   function convertFileToBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -234,7 +220,6 @@
     });
   }
 
-  // Load existing data directly out of Firestore onto the map layout
   async function loadPermanentPins() {
     try {
       const querySnapshot = await getDocs(collection(db, "duck_finds"));
@@ -259,7 +244,6 @@
 
   loadPermanentPins();
 
-  // Handle high accuracy mobile HTML5 geolocation tracks
   if (gpsButton) {
     gpsButton.addEventListener('click', () => {
       if (!navigator.geolocation) {
@@ -294,7 +278,6 @@
     });
   }
 
-  // Intercept submit button execution
   if (duckForm) {
     duckForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -311,7 +294,6 @@
       const fileInput = document.getElementById('photo-file-input');
       let photoUrlValue = "";
 
-      // Process uploaded photo directly into code strings natively
       if (fileInput && fileInput.files.length > 0) {
         try {
           photoUrlValue = await convertFileToBase64(fileInput.files[0]);
@@ -320,7 +302,6 @@
         }
       }
 
-      // Geo-fallback lookup if map pin wasn't physically clicked or GPS wasn't used
       if (isNaN(latValue) || isNaN(lngValue)) {
         try {
           const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationText)}`;
@@ -343,7 +324,6 @@
         }
       }
 
-      // Write straight to your Firestore collection instance
       try {
         await addDoc(collection(db, "duck_finds"), {
           username: nameValue,
@@ -360,7 +340,6 @@
         if (gpsStatus) gpsStatus.textContent = "";
         modal.classList.remove('active');
 
-        // Clear active map markers and hard refresh from the live database pipeline
         map.eachLayer((layer) => {
           if (layer instanceof L.Marker) map.removeLayer(layer);
         });
