@@ -22,7 +22,9 @@
         .btn-back { background: transparent; border: 1px solid #555; color: #fff; padding: 15px; border-radius: 50px; cursor: pointer; width: 100%; }
         #closeFormBtn { position: relative; z-index: 101; display: block !important; }
         .btn-sub { background-color: #555; color: white; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
-        .form-card input { width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: none; box-sizing: border-box; }
+        .form-card input, .form-card label { width: 100%; margin-bottom: 10px; display: block; box-sizing: border-box; }
+        .form-card input[type="text"] { padding: 10px; border-radius: 5px; border: none; background: #fff; color: #000; }
+        .form-card input[type="file"] { color: #fff; margin-top: 5px; font-size: 0.9em; }
         #gps-status { display: block; text-align: center; font-size: 0.85em; margin-bottom: 10px; color: #ffcc00; }
     </style>
 </head>
@@ -60,7 +62,9 @@
                 <span id="gps-status"></span>
 
                 <input type="text" id="notes-input" placeholder="Notes or Messages">
-                <input type="text" id="photo-url-input" placeholder="Photo Link URL (Optional)">
+                
+                <label style="font-size: 0.85em; color: #ffcc00; margin-top: 5px;">Upload Duck Photo:</label>
+                <input type="file" id="photo-file-input" accept="image/*">
                 
                 <input type="hidden" id="lat-input">
                 <input type="hidden" id="lng-input">
@@ -92,13 +96,11 @@
 
   let map, userMarker;
 
-  // Render Map Core Setup Engine
   map = L.map('map').setView([39.8283, -98.5795], 4);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
       attribution: '&copy; OpenStreetMap' 
   }).addTo(map);
 
-  // Manual Map Tap Pin Selection Fallback Setup
   map.on('click', function(e) {
       if (userMarker) map.removeLayer(userMarker);
       userMarker = L.marker(e.latlng).addTo(map);
@@ -106,7 +108,6 @@
       document.getElementById('lng-input').value = e.latlng.lng;
   });
 
-  // Modal UI Controls
   const modal = document.getElementById('formModal');
   document.getElementById('openFormBtn').addEventListener('click', () => modal.classList.add('active'));
   document.getElementById('closeFormBtn').addEventListener('click', () => modal.classList.remove('active'));
@@ -117,7 +118,16 @@
   const lngInput = document.getElementById('lng-input');
   const duckForm = document.getElementById('duckForm');
 
-  // --- ACTION A: FETCH & RENDER PERMANENT DB PINS ---
+  // Helper helper to turn image files into text strings natively
+  function convertFileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
   async function loadPermanentPins() {
     try {
       const querySnapshot = await getDocs(collection(db, "duck_finds"));
@@ -127,10 +137,10 @@
           const markerInstance = L.marker([duck.lat, duck.lng]).addTo(map);
           markerInstance.bindPopup(`
             <div style="font-family: Arial, sans-serif; max-width: 200px; color: #121212;">
-              <h4 style="margin: 0 0 5px 0; color: #e6b800;">🦆 Duck Logged by ${duck.username || 'Jeep Fan'}!</h4>
+              <h4 style="margin: 0 0 5px 0; color: #b48a04;">🦆 Duck Logged by ${duck.username || 'Jeep Fan'}!</h4>
               <p style="margin: 0 0 5px 0;"><b>Where:</b> ${duck.locationText || 'On the road'}</p>
               <p style="margin: 0 0 8px 0; font-size: 0.9em;">"${duck.notes}"</p>
-              ${duck.photoUrl ? `<img src="${duck.photoUrl}" style="width:100%; border-radius:4px; margin-top:5px;"/>` : ''}
+              ${duck.photoUrl ? `<img src="${duck.photoUrl}" style="width:100%; border-radius:4px; margin-top:5px; max-height:150px; object-fit:cover;"/>` : ''}
             </div>
           `);
         }
@@ -140,10 +150,8 @@
     }
   }
 
-  // Load database entries directly on launch
   loadPermanentPins();
 
-  // --- ACTION B: WIRELESS GPS TRACKING ENGINE ---
   if (gpsButton) {
     gpsButton.addEventListener('click', () => {
       if (!navigator.geolocation) {
@@ -178,7 +186,6 @@
     });
   }
 
-  // --- ACTION C: SECURE FIRESTORE DATA WRITER ---
   if (duckForm) {
     duckForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -191,9 +198,20 @@
       const nameValue = document.getElementById('name-input').value;
       const locationText = document.getElementById('locationInput').value;
       const notesValue = document.getElementById('notes-input').value;
-      const photoUrlValue = document.getElementById('photo-url-input').value;
+      
+      // CHANGED: Fetch file element reference
+      const fileInput = document.getElementById('photo-file-input');
+      let photoUrlValue = "";
 
-      // Address Address Text Geocoding Fallback if no precise GPS coordinates loaded
+      // Convert image to string if a file was selected
+      if (fileInput && fileInput.files.length > 0) {
+        try {
+          photoUrlValue = await convertFileToBase64(fileInput.files[0]);
+        } catch (fileErr) {
+          console.error("Image compression error:", fileErr);
+        }
+      }
+
       if (isNaN(latValue) || isNaN(lngValue)) {
         try {
           const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationText)}`;
@@ -223,30 +241,4 @@
           lat: latValue,
           lng: lngValue,
           notes: notesValue,
-          photoUrl: photoUrlValue,
-          timestamp: new Date()
-        });
-
-        alert("Duck successfully logged forever! 🦆");
-        duckForm.reset();
-        if (gpsStatus) gpsStatus.textContent = "";
-        modal.classList.remove('active');
-
-        // Clear markers and repaint cleanly
-        map.eachLayer((layer) => {
-          if (layer instanceof L.Marker) map.removeLayer(layer);
-        });
-        loadPermanentPins();
-
-      } catch (error) {
-        alert("Database error. Verification failed.");
-        console.error("Firestore write error:", error);
-      } finally {
-        btn.innerText = "Submit Duck";
-        btn.disabled = false;
-      }
-    });
-  }
-</script>
-</body>
-</html>
+          photoUrl: photoUrl
