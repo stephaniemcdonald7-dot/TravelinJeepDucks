@@ -26,8 +26,6 @@
     <div class="duck-flock">
         <img src="Blue Star Duck.png" class="duck-item" style="top:5%; left:2%;">
         <img src="Orange Duck.png" class="duck-item" style="top:15%; right:5%;">
-        <img src="Pink Dot Duck.png" class="duck-item" style="top:60%; left:5%;">
-        <img src="Teal Duck.png" class="duck-item" style="top:10%; left:35%;">
     </div>
 
     <header><h1>Travelin' Jeep Ducks</h1></header>
@@ -47,7 +45,7 @@
                 <input type="file" name="file" accept="image/*" required style="width:100%; margin-bottom:10px;">
                 <input type="hidden" name="lat" id="lat">
                 <input type="hidden" name="lng" id="lng">
-                <button type="submit" class="btn-log" style="width:100%">Submit</button>
+                <button type="submit" class="btn-log" style="width:100%">Submit Duck</button>
             </form>
         </div>
     </div>
@@ -64,23 +62,37 @@
         map.on('click', function(e) {
             if (marker) map.removeLayer(marker);
             marker = L.marker(e.latlng).addTo(map);
+            // Save coordinates to hidden fields
             document.getElementById('lat').value = e.latlng.lat;
             document.getElementById('lng').value = e.latlng.lng;
-            alert("Location set!");
         });
     };
 
-    const modal = document.getElementById('formModal');
-    document.getElementById('openFormBtn').addEventListener('click', () => modal.classList.add('active'));
+    // Modal behavior
+    document.getElementById('openFormBtn').addEventListener('click', () => {
+        document.getElementById('formModal').classList.add('active');
+    });
 
-    document.getElementById('duckForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        if(!document.getElementById('lat').value) { alert("Please click the map to set location!"); return; }
+    // Form logic
+    document.getElementById('duckForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevents page refresh
+        
+        if(!document.getElementById('lat').value) {
+            alert("Please click the map to set location first!");
+            return;
+        }
 
-        const formData = new FormData(document.getElementById('duckForm'));
+        const formData = new FormData(this);
         fetch(SCRIPT_URL, { method: 'POST', body: formData })
-        .then(() => { alert('Duck logged!'); modal.classList.remove('active'); document.getElementById('duckForm').reset(); })
-        .catch(error => { console.error(error); alert('Error logging duck.'); });
+        .then(() => {
+            alert('Duck logged successfully!');
+            document.getElementById('formModal').classList.remove('active');
+            this.reset();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Error: Make sure your Google Apps Script is deployed as "Anyone" access.');
+        });
     });
 </script>
 </body>
