@@ -7,20 +7,43 @@
     <link rel="icon" type="image/svg+xml" href="DuckSVG.svg">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; overflow-x: hidden; }
+        /* Reset and Base */
+        * { box-sizing: border-box; }
+        body { 
+            font-family: sans-serif; 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
         
-        /* 1. Background Layer (Ducks) - pointer-events: none is the key here */
-        .duck-flock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        /* Fixed background layer */
+        .duck-flock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
         .duck-item { position: absolute; width: 80px; opacity: 0.8; }
 
-        /* 2. Content Layer - Higher z-index ensures they stay "above" the ducks */
-        header, .btn-container, .map-container, .modal-overlay { position: relative; z-index: 100; }
+        /* Container Layers - z-index is crucial here */
+        header, .btn-container, .map-container { position: relative; z-index: 10; }
 
         .btn-container { display: flex; gap: 15px; margin: 20px 0; }
-        .map-container { width: 90%; max-width: 900px; height: 500px; margin: 20px 0; border-radius: 12px; overflow: hidden; border: 2px solid #ffcc00; }
+        
+        .map-container { 
+            width: 90%; 
+            max-width: 900px; 
+            height: 500px; 
+            margin: 20px 0; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 2px solid #ffcc00;
+            background: #000; /* Fallback */
+        }
         #map { width: 100%; height: 100%; }
         
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        /* Modal - High index ensures it stays on top of everything */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
         .modal-overlay.active { display: flex; }
         .form-card { background-color: #1e1e1e; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; border: 2px solid #ffcc00; }
         .btn-log { background-color: #ffcc00; color: #000; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
@@ -32,14 +55,8 @@
     <div class="duck-flock">
         <img src="Blue Star Duck.png" class="duck-item" style="top:5%; left:2%;">
         <img src="Orange Duck.png" class="duck-item" style="top:15%; right:5%;">
-        <img src="Orange Stripe Duck.png" class="duck-item" style="top:40%; left:85%;">
         <img src="Pink Dot Duck.png" class="duck-item" style="top:60%; left:5%;">
-        <img src="Purple Goggles Duck.png" class="duck-item" style="top:80%; right:10%;">
-        <img src="Rainbow Duck.png" class="duck-item" style="top:30%; left:10%;">
-        <img src="Teal Duck With Leaf.png" class="duck-item" style="top:70%; right:5%;">
         <img src="Teal Duck.png" class="duck-item" style="top:10%; left:35%;">
-        <img src="Yellow Duck Hat.png" class="duck-item" style="top:50%; left:25%;">
-        <img src="Yellow Duck.png" class="duck-item" style="top:85%; left:40%;">
     </div>
 
     <header><h1>Travelin' Jeep Ducks</h1></header>
@@ -49,7 +66,9 @@
         <a href="submissions.html" class="btn-sub">🖼️ VIEW SUBMISSIONS</a>
     </div>
 
-    <div class="map-container"><div id="map"></div></div>
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
 
     <div class="modal-overlay" id="formModal">
         <div class="form-card">
@@ -63,20 +82,20 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize Map
         const map = L.map('map').setView([39.8283, -98.5795], 4);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
         
-        // Form Logic
-        document.getElementById('openFormBtn').onclick = () => document.getElementById('formModal').classList.add('active');
+        document.getElementById('openFormBtn').addEventListener('click', () => {
+            document.getElementById('formModal').classList.add('active');
+        });
         
-        document.getElementById('duckForm').onsubmit = function(e) {
+        document.getElementById('duckForm').addEventListener('submit', (e) => {
             e.preventDefault();
             alert('Duck logged!');
             document.getElementById('formModal').classList.remove('active');
-        };
+        });
     </script>
 </body>
 </html>
