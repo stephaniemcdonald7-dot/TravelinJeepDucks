@@ -4,34 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travelin' Jeep Ducks</title>
+    <link rel="icon" type="image/svg+xml" href="DuckSVG.svg">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; overflow-x: hidden; }
+        
+        /* Background Duck Pattern */
+        .duck-flock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .duck-item { position: absolute; width: 80px; opacity: 0.9; }
+
+        /* Navigation & Content */
+        header, .map-container, .btn-container, .modal-overlay { position: relative; z-index: 10; }
+        .btn-container { display: flex; gap: 15px; margin: 20px 0; }
+
         .map-container { width: 90%; max-width: 900px; height: 500px; margin: 20px 0; border-radius: 12px; overflow: hidden; border: 2px solid #ffcc00; }
         #map { width: 100%; height: 100%; }
+        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.active { display: flex; }
         .form-card { background-color: #1e1e1e; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; border: 2px solid #ffcc00; }
-        .form-group { margin-bottom: 15px; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 5px; box-sizing: border-box; }
-        .btn-log { background-color: #ffcc00; color: #000; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; }
+        .btn-log { background-color: #ffcc00; color: #000; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-sub { background-color: #555; color: white; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
     </style>
 </head>
 <body>
 
+    <div class="duck-flock">
+        <img src="Blue Star Duck.png" class="duck-item" style="top:5%; left:2%;">
+        <img src="Orange Duck.png" class="duck-item" style="top:15%; right:5%;">
+        <img src="Orange Stripe Duck.png" class="duck-item" style="top:40%; left:85%;">
+        <img src="Pink Dot Duck.png" class="duck-item" style="top:60%; left:5%;">
+        <img src="Purple Goggles Duck.png" class="duck-item" style="top:80%; right:10%;">
+        <img src="Rainbow Duck.png" class="duck-item" style="top:30%; left:10%;">
+        <img src="Teal Duck With Leaf.png" class="duck-item" style="top:70%; right:5%;">
+        <img src="Teal Duck.png" class="duck-item" style="top:10%; left:35%;">
+        <img src="Yellow Duck Hat.png" class="duck-item" style="top:50%; left:25%;">
+        <img src="Yellow Duck.png" class="duck-item" style="top:85%; left:40%;">
+    </div>
+
     <header><h1>Travelin' Jeep Ducks</h1></header>
-    <button class="btn-log" id="openFormBtn">📍 LOG A DUCK</button>
+    
+    <div class="btn-container">
+        <button class="btn-log" id="openFormBtn">📍 LOG A DUCK</button>
+        <a href="submissions.html" class="btn-sub">🖼️ VIEW SUBMISSIONS</a>
+    </div>
+
     <div class="map-container"><div id="map"></div></div>
 
     <div class="modal-overlay" id="formModal">
         <div class="form-card">
             <form id="duckForm">
-                <input type="text" name="Name" placeholder="Your Name/ Jeep Name" required>
-                <input type="file" name="file" accept="image/*" required>
-                <textarea name="Notes" placeholder="Want to add a message?"></textarea>
-                <input type="hidden" name="lat" id="lat" required>
-                <input type="hidden" name="lng" id="lng" required>
-                <p id="locLabel" style="color:#ffcc00">Click map to set location.</p>
+                <input type="text" name="Name" placeholder="Your Name" required style="width:100%; margin-bottom:10px; padding:10px;">
+                <input type="file" name="file" accept="image/*" required style="width:100%; margin-bottom:10px;">
                 <button type="submit" class="btn-log" style="width:100%">Submit</button>
             </form>
         </div>
@@ -41,28 +65,8 @@
     <script>
         const map = L.map('map').setView([39.8283, -98.5795], 4);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5dtjDjpVNJxgSMFoJMvqxKuX1eMtMZuc2HiTcr5yRR50IRRwcERnvnKlXBDxwsTUY/exec';
-        let marker;
-
-        map.on('click', function(e) {
-            if (marker) map.removeLayer(marker);
-            marker = L.marker(e.latlng).addTo(map);
-            document.getElementById('lat').value = e.latlng.lat;
-            document.getElementById('lng').value = e.latlng.lng;
-            document.getElementById('locLabel').innerText = "Location locked!";
-        });
-
+        
         document.getElementById('openFormBtn').onclick = () => document.getElementById('formModal').classList.add('active');
-
+        
         document.getElementById('duckForm').onsubmit = function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
-            fetch(SCRIPT_URL, { method: 'POST', body: formData })
-            .then(() => {
-                alert('Duck logged!');
-                window.location.href = 'submissions.html';
-            });
-        };
-    </script>
-</body>
-</html>
