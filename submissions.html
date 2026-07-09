@@ -27,9 +27,11 @@
     </div>
 
 <script type="module">
+  // 1. Import Firebase SDK Core Modules via CDN
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+  // 2. Verified configuration matching your index.html exactly
   const firebaseConfig = {
     apiKey: "AIzaSyD-hoTeWLJRsnheCZvEWFGwdxlfvL0Q6Uk",
     authDomain: "travelinjeepducks.firebaseapp.com",
@@ -40,14 +42,16 @@
     measurementId: "G-79Z5FD1MF3"
   };
 
+  // 3. Initialize services
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // FIXED: Pointed JavaScript directly to your gallery container ID
+  // Targets your gallery grid container ID directly
   const container = document.getElementById('submissionsList');
 
   async function displaySubmissions() {
     try {
+      // Fetch data sorting by newest timestamp first
       const q = query(collection(db, "duck_finds"), orderBy("timestamp", "desc"));
       const querySnapshot = await getDocs(q);
       
@@ -62,7 +66,7 @@
         const duck = doc.data();
         const dateLogged = duck.timestamp ? new Date(duck.timestamp.seconds * 1000).toLocaleDateString() : "Recently";
 
-        // FIXED: Swapped out generic styling for your actual CSS postcard component template
+        // Formats your items cleanly inside your custom .postcard styles
         const cardHTML = `
           <div class="postcard">
             ${duck.photoUrl ? `<img src="${duck.photoUrl}" alt="Jeep Duck Sighting" />` : `<div style="width:100%; height:200px; background:#e0e0e0; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#666; margin-bottom:10px;">📸 No Photo Provided</div>`}
@@ -86,6 +90,7 @@
     }
   }
 
+  // Load postings on window render
   displaySubmissions();
 </script>
 </body>
