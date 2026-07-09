@@ -24,7 +24,6 @@
     </div>
 
     <script>
-        // Use your NEW Script URL here
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmuFK1oyzLH3Q6w7r6z7W2kEkzM94BZZRgFCh0kCqqnhGhBplLys6Vg-hIe589pjME/exec';
 
         async function loadDucks() {
@@ -34,6 +33,7 @@
                 const list = document.getElementById('submissionsList');
                 list.innerHTML = '';
                 
+                // This is the correct loop inside the successful fetch block
                 data.forEach(duck => {
                     const div = document.createElement('div');
                     div.className = 'postcard';
@@ -41,10 +41,12 @@
                         <img src="${duck.ImageURL}" alt="Duck">
                         <h3>${duck.Name}</h3>
                         <p>📍 ${duck.Location}</p>
+                        <p><em>"${duck.Message || ''}"</em></p>
                     `;
                     list.appendChild(div);
                 });
             } catch (err) {
+                console.error(err);
                 document.getElementById('submissionsList').innerHTML = '<h2 style="color:red;">Failed to load. Did you redeploy the script?</h2>';
             }
         }
