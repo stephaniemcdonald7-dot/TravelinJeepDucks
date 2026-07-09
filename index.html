@@ -17,7 +17,8 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.active { display: flex; }
         .form-card { background-color: #1e1e1e; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; border: 2px solid #ffcc00; }
-        .btn-log { background-color: #ffcc00; color: #000; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-log { background-color: #ffcc00; color: #000; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; width: 100%; margin-bottom: 10px;}
+        .btn-back { background: transparent; border: 1px solid #555; color: #fff; padding: 15px; border-radius: 50px; cursor: pointer; width: 100%; }
         .btn-sub { background-color: #555; color: white; padding: 15px 30px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
     </style>
 </head>
@@ -26,12 +27,14 @@
     <div class="duck-flock">
         <img src="Blue Star Duck.png" class="duck-item" style="top:5%; left:2%;">
         <img src="Orange Duck.png" class="duck-item" style="top:15%; right:5%;">
+        <img src="Pink Dot Duck.png" class="duck-item" style="top:60%; left:5%;">
+        <img src="Teal Duck.png" class="duck-item" style="top:10%; left:35%;">
     </div>
 
     <header><h1>Travelin' Jeep Ducks</h1></header>
     
     <div class="btn-container">
-        <button class="btn-log" id="openFormBtn">📍 LOG A DUCK</button>
+        <button class="btn-log" style="width: auto;" id="openFormBtn">📍 LOG A DUCK</button>
         <a href="submissions.html" class="btn-sub">🖼️ VIEW SUBMISSIONS</a>
     </div>
 
@@ -40,12 +43,15 @@
     <div class="modal-overlay" id="formModal">
         <div class="form-card">
             <form id="duckForm">
-                <input type="text" name="Name" placeholder="Your Name/Jeep Name" required style="width:100%; margin-bottom:10px; padding:10px;">
-                <input type="text" name="Location" placeholder="Location (City, State)" required ...>
+                <input type="text" name="Name" placeholder="Your Name/Jeep Name" required style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px;">
+                <input type="text" name="Location" id="locationInput" placeholder="Location (City, State)" required style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px;">
                 <input type="file" name="file" accept="image/*" required style="width:100%; margin-bottom:10px;">
+                
                 <input type="hidden" name="lat" id="lat">
                 <input type="hidden" name="lng" id="lng">
-                <button type="submit" class="btn-log" style="width:100%">Submit Duck</button>
+                
+                <button type="submit" class="btn-log">Submit Duck</button>
+                <button type="button" class="btn-back" id="closeFormBtn">← Back</button>
             </form>
         </div>
     </div>
@@ -62,36 +68,39 @@
         map.on('click', function(e) {
             if (marker) map.removeLayer(marker);
             marker = L.marker(e.latlng).addTo(map);
-            // Save coordinates to hidden fields
             document.getElementById('lat').value = e.latlng.lat;
             document.getElementById('lng').value = e.latlng.lng;
         });
     };
 
-    // Modal behavior
-    document.getElementById('openFormBtn').addEventListener('click', () => {
-        document.getElementById('formModal').classList.add('active');
-    });
+    const modal = document.getElementById('formModal');
+    document.getElementById('openFormBtn').addEventListener('click', () => modal.classList.add('active'));
+    document.getElementById('closeFormBtn').addEventListener('click', () => modal.classList.remove('active'));
 
-    // Form logic
-    document.getElementById('duckForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevents page refresh
+    document.getElementById('duckForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
         
+        const locationText = document.getElementById('locationInput').value;
+        // Basic geocoding logic to set Lat/Lng if user didn't click map
         if(!document.getElementById('lat').value) {
-            alert("Please click the map to set location first!");
-            return;
+            const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationText)}`;
+            const res = await fetch(geoUrl);
+            const data = await res.json();
+            if(data.length > 0) {
+                document.getElementById('lat').value = data[0].lat;
+                document.getElementById('lng').value = data[0].lon;
+            } else {
+                alert("Location not found on map, please click the map manually!");
+                return;
+            }
         }
 
         const formData = new FormData(this);
         fetch(SCRIPT_URL, { method: 'POST', body: formData })
         .then(() => {
             alert('Duck logged successfully!');
-            document.getElementById('formModal').classList.remove('active');
+            modal.classList.remove('active');
             this.reset();
-        })
-        .catch(err => {
-            console.error(err);
-            alert('Error: Make sure your Google Apps Script is deployed as "Anyone" access.');
         });
     });
 </script>
