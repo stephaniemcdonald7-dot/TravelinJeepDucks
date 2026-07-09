@@ -48,39 +48,65 @@
     <div class="modal-overlay" id="formModal">
         <div class="form-card">
             <form id="duckForm">
-                <input type="text" name="Name" placeholder="Your Name" required style="width:100%; margin-bottom:10px; padding:10px;">
+                <input type="text" name="Name" placeholder="Your Name/Jeep Name" required style="width:100%; margin-bottom:10px; padding:10px;">
+                <input type="text" name="Name" placeholder="Location (City, State)" required style="width:100%; margin-bottom:10px; padding:10px;">
                 <input type="file" name="file" accept="image/*" required style="width:100%; margin-bottom:10px;">
                 <button type="submit" class="btn-log" style="width:100%">Submit</button>
             </form>
         </div>
     </div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // 1. YOUR DEPLOYMENT URL
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5dtjDjpVNJxgSMFoJMvqxKuX1eMtMZuc2HiTcr5yRR50IRRwcERnvnKlXBDxwsTUY/exec';
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // Wait for page to load
-        window.onload = function() {
-            const map = L.map('map').setView([39.8283, -98.5795], 4);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-        };
+    let map, marker;
 
-        // Button Logic
-        const modal = document.getElementById('formModal');
-        document.getElementById('openFormBtn').addEventListener('click', () => {
-            modal.classList.add('active');
+    window.onload = function() {
+        map = L.map('map').setView([39.8283, -98.5795], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        // Capture location when user clicks map
+        map.on('click', function(e) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('lat').value = e.latlng.lat;
+            document.getElementById('lng').value = e.latlng.lng;
+            alert("Location set: " + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4));
         });
+    };
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target == modal) { modal.classList.remove('active'); }
-        };
+    // Button Logic
+    const modal = document.getElementById('formModal');
+    document.getElementById('openFormBtn').addEventListener('click', () => {
+        modal.classList.add('active');
+    });
 
-        document.getElementById('duckForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Duck submission received!');
+    // Form Submission Logic
+    document.getElementById('duckForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Check if location was set
+        if(!document.getElementById('lat').value) {
+            alert("Please click on the map to set your location first!");
+            return;
+        }
+
+        const formData = new FormData(document.getElementById('duckForm'));
+        
+        fetch(SCRIPT_URL, { method: 'POST', body: formData })
+        .then(response => {
+            alert('Duck logged successfully!');
             modal.classList.remove('active');
+            document.getElementById('duckForm').reset();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to log duck. Check console for details.');
         });
-    </script>
+    });
+</script>
 </body>
 </html>
